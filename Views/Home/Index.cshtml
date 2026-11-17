@@ -1,0 +1,26 @@
+﻿@model List<TurfTime.Web.Models.Turf>
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="bg-light py-5 text-center">
+    <h1 class="display-5 fw-bold">Book your turf in seconds</h1>
+    <p class="lead">Find sports turfs near you, pick a free slot, and play.</p>
+    <a asp-area="Identity" asp-page="/Account/Register" class="btn btn-success btn-lg">Get started</a>
+</div>
+
+<h3 class="my-4">Featured turfs</h3>
+<div class="row g-4">
+    @foreach (var t in Model)
+    {
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@t.Name</h5>
+                    <p class="card-text">@t.Sport | @t.City<br />Rs @t.PricePerHour / hour</p>
+                    <a asp-area="Identity" asp-page="/Account/Login" class="btn btn-outline-success">Book now</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
