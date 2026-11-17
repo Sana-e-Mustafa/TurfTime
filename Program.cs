@@ -11,11 +11,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<TurfTime.Web.Repositories.ITurfRepository, TurfTime.Web.Repositories.TurfRepository>();
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    await TurfTime.Web.Data.SeedData.InitializeAsync(scope.ServiceProvider);
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

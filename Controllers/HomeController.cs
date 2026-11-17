@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TurfTime.Web.Repositories;
 
@@ -14,8 +15,18 @@ namespace TurfTime.Web.Controllers
 
         public IActionResult Index()
         {
-            var turfs = _repo.GetAll();
-            return View(turfs);
+            if (User.Identity != null && User.Identity.IsAuthenticated)
+                return RedirectToAction("Dashboard");
+
+            return View(_repo.GetAll());
+        }
+
+        [Authorize]
+        public IActionResult Dashboard()
+        {
+            if (User.IsInRole("Admin")) return RedirectToAction("Index", "Admin");
+            if (User.IsInRole("Owner")) return RedirectToAction("Index", "Owner");
+            return RedirectToAction("Index", "Player");
         }
     }
 }

@@ -1,0 +1,22 @@
+﻿@model List<Microsoft.AspNetCore.Identity.IdentityUser>
+@{
+    ViewData["Title"] = "Admin";
+}
+
+<h3 class="my-4">Admin dashboard</h3>
+<div class="row g-3 mb-4">
+    <div class="col-md-4"><div class="card text-center"><div class="card-body"><h6>Users</h6><h2>@Model.Count</h2></div></div></div>
+    <div class="col-md-4"><div class="card text-center"><div class="card-body"><h6>Turfs</h6><h2>3</h2></div></div></div>
+    <div class="col-md-4"><div class="card text-center"><div class="card-body"><h6>Bookings</h6><h2>0</h2></div></div></div>
+</div>
+
+<h5>All users</h5>
+<table class="table table-striped">
+    <thead><tr><th>Email</th><th>Username</th></tr></thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr><td>@u.Email</td><td>@u.UserName</td></tr>
+        }
+    </tbody>
+</table>
