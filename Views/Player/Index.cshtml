@@ -1,41 +1,60 @@
 ﻿@model List<TurfTime.Web.Models.Turf>
 @{
     ViewData["Title"] = "Player";
+    string? savedCity = ViewBag.City;
 }
 
 <h3 class="my-4">Welcome, Player</h3>
+<a asp-action="MyBookings" class="btn btn-outline-success mb-3">My bookings</a>
+
 <div class="card mb-4">
     <div class="card-body">
         <h5>Find a turf</h5>
         <div class="row g-2">
-            <div class="col-md-4"><select class="form-select"><option>Football</option><option>Cricket</option><option>Badminton</option></select></div>
-            <div class="col-md-4"><select class="form-select"><option>Lahore</option><option>Karachi</option><option>Islamabad</option></select></div>
-            <div class="col-md-4"><input type="date" class="form-control" /></div>
+            <div class="col-md-5">
+                <select id="sport" class="form-select">
+                    <option value="">All sports</option>
+                    <option>Football</option>
+                    <option>Cricket</option>
+                    <option>Badminton</option>
+                </select>
+            </div>
+            <div class="col-md-5">
+                <select id="city" class="form-select">
+                    <option value="">All cities</option>
+                    @foreach (var c in new[] { "Lahore", "Karachi", "Islamabad" })
+                    {
+                        <option selected="@(c == savedCity)">@c</option>
+                    }
+                </select>
+            </div>
+            <div class="col-md-2"><button id="btnSearch" class="btn btn-success w-100">Search</button></div>
         </div>
-        <button class="btn btn-success mt-3">Search</button>
     </div>
 </div>
 
-<h5>Available turfs</h5>
-<div class="row g-4 mb-4">
-    @foreach (var t in Model)
-    {
-        <div class="col-md-4">
-            <div class="card h-100">
-                <div class="card-body">
-                    <h5 class="card-title">@t.Name</h5>
-                    <p class="card-text">@t.Sport | @t.City<br />Rs @t.PricePerHour / hour</p>
-                    <button class="btn btn-outline-success">Book now</button>
-                </div>
-            </div>
-        </div>
-    }
+<div id="results">
+    @await Html.PartialAsync("_TurfList", Model)
 </div>
 
-<h5>My bookings</h5>
-<table class="table table-striped">
-    <thead><tr><th>Turf</th><th>Date</th><th>Slot</th><th>Status</th></tr></thead>
-    <tbody>
-        <tr><td>Green Arena</td><td>20 Nov</td><td>7-8 PM</td><td><span class="badge bg-success">Confirmed</span></td></tr>
-    </tbody>
-</table>
+@section Scripts {
+    <script>
+        $('#btnSearch').click(function () {
+            $.get('/Player/Search', { sport: $('#sport').val(), city: $('#city').val() }, function (html) {
+                $('#results').html(html);
+            });
+        });
+
+        $(document).on('click', '.btn-book', function () {
+            var body = $(this).closest('.card-body');
+            $.post('/Player/Book', {
+                turfId: $(this).data('id'),
+                date: body.find('.book-date').val(),
+                slot: body.find('.book-slot').val()
+            }, function (r) {
+                body.find('.msg').text(r.message)
+                    .attr('class', 'msg small mt-2 ' + (r.success ? 'text-success' : 'text-danger'));
+            });
+        });
+    </script>
+}

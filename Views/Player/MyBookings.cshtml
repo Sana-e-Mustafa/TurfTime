@@ -1,0 +1,36 @@
+﻿@model List<TurfTime.Web.Models.Booking>
+@{
+    ViewData["Title"] = "My bookings";
+}
+
+<h3 class="my-4">My bookings</h3>
+<table class="table table-striped">
+    <thead><tr><th>Turf</th><th>Date</th><th>Slot</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var b in Model)
+        {
+            <tr id="row-@b.Id">
+                <td>@b.TurfName</td>
+                <td>@b.BookingDate.ToString("dd MMM yyyy")</td>
+                <td>@b.Slot</td>
+                <td><span class="badge bg-success">@b.Status</span></td>
+                <td><button class="btn btn-sm btn-outline-danger btn-cancel" data-id="@b.Id">Cancel</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+<a asp-action="Index" class="btn btn-outline-secondary">Back</a>
+
+@section Scripts {
+    <script>
+        $('.btn-cancel').click(function () {
+            var id = $(this).data('id');
+            $.ajax({
+                url: '/Player/Cancel',
+                type: 'POST',
+                data: { id: id },
+                success: function () { $('#row-' + id).remove(); }
+            });
+        });
+    </script>
+}

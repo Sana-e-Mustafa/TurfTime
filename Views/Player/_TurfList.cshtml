@@ -1,0 +1,29 @@
+﻿@model List<TurfTime.Web.Models.Turf>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No turfs found.</p>
+}
+<div class="row g-4 mb-4">
+    @foreach (var t in Model)
+    {
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title">@t.Name</h5>
+                    <p class="card-text">@t.Sport | @t.City<br />Rs @t.PricePerHour / hour</p>
+                    <input type="date" class="form-control mb-2 book-date" />
+                    <select class="form-select mb-2 book-slot">
+                        <option>6-7 PM</option>
+                        <option>7-8 PM</option>
+                        <option>8-9 PM</option>
+                        <option>9-10 PM</option>
+                        <option>10-11 PM</option>
+                    </select>
+                    <button class="btn btn-success btn-book" data-id="@t.Id">Book now</button>
+                    <div class="msg small mt-2"></div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TurfTime.Web.Models;
 using TurfTime.Web.Repositories;
 
 namespace TurfTime.Web.Controllers
@@ -14,9 +15,38 @@ namespace TurfTime.Web.Controllers
             _repo = repo;
         }
 
-        public IActionResult Index()
+        public IActionResult Index() => View(_repo.GetAll());
+
+        public IActionResult Create() => View("Form", new Turf());
+
+        [HttpPost]
+        public IActionResult Create(Turf t)
         {
-            return View(_repo.GetAll());
+            if (!ModelState.IsValid) return View("Form", t);
+            _repo.Add(t);
+            return RedirectToAction("Index");
+        }
+
+        public IActionResult Edit(int id)
+        {
+            var t = _repo.GetById(id);
+            if (t == null) return NotFound();
+            return View("Form", t);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Turf t)
+        {
+            if (!ModelState.IsValid) return View("Form", t);
+            _repo.Update(t);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        public IActionResult Delete(int id)
+        {
+            try { _repo.Delete(id); return Json(new { success = true }); }
+            catch { return Json(new { success = false, message = "Cannot delete a turf that has bookings." }); }
         }
     }
 }

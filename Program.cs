@@ -15,7 +15,7 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<TurfTime.Web.Repositories.ITurfRepository, TurfTime.Web.Repositories.TurfRepository>();
-
+builder.Services.AddScoped<TurfTime.Web.Repositories.IBookingRepository, TurfTime.Web.Repositories.BookingRepository>();
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
